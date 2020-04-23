@@ -12,10 +12,11 @@ namespace APBDKol1.Services
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s19542;Integrated Security=True";
         public ICollection<Prescription> GetPrescriptions(string lastName)
         {
-
-            if (lastName == null) { 
-            
-           }
+            string comText="";
+//IdPrescription, Date, DueDate, PatientLastName, DoctorLastName
+            if (lastName == null) {
+               comText = "select IdPrescription, Date, DueDate, Patient.LastName, Doctor.LastName  from Prescription where Prescription.IdDoctor=Doctor.IdDoctor where  Prescription.IdPatient=Patient.IdPatient order by Date;";
+            }
 
 
             var list = new List<Prescription>();
@@ -24,30 +25,31 @@ namespace APBDKol1.Services
             using (var com = new SqlCommand())
             {
                 com.Connection = con;
-                com.CommandText = "select FirstName,LastName,BirthDate, Name, Semester from Student INNER JOIN Enrollment en ON Student.IdEnrollment = en.IdEnrollment INNER JOIN Studies st ON en.IdStudy = st.IdStudy;";
+                com.CommandText =comText;
 
                 con.Open();
 
                 var dr = com.ExecuteReader();
                 while (dr.Read())
                 {
-                    var student = new Student();
-                    student.FirstName = dr["FirstName"].ToString();
-                    student.LastName = dr["LastName"].ToString();
-                    student.BirthDate = (System.DateTime)dr["BirthDate"];
-                    student.Studies = dr["Name"].ToString();
-                    student.Semester = dr["Semester"].ToString();
+                    var per = new Prescription();
 
-                    list.Add(student);
+                    per.IdPrescription =(int) dr["IdPrescription"];
+                    per.Date = (System.DateTime)dr["Date"];
+                    per.DoctorLastName = dr["DoctorLastName"].ToString();
+                    per.PatientLastName = dr["PatientLastName"].ToString();
+
+                    per.DueDate = (System.DateTime)dr["DueDate"];
+                    list.Add(per);
 
                 }
 
             }
 
-            return Ok(list);
+            return list;
 
 
-            return null;
+            
         }
     }
 }

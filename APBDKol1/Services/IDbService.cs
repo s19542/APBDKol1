@@ -1,11 +1,15 @@
-﻿using System;
+﻿using APBDKol1.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace APBDKol1.Services
 {
-    public class IDbService
+    public interface IDbService
     {
+        public ICollection<Prescription> GetPrescriptions(string lastName);
+
+
     }
 }
